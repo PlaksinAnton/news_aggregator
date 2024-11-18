@@ -1,6 +1,6 @@
 FROM python:3.12-slim
 
-WORKDIR /db_accessor
+WORKDIR /users_db_accessor
 
 COPY requirements.txt ./
 
