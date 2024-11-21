@@ -1,21 +1,20 @@
 from flask import Flask, g, jsonify, request
-# import requests
-import os
-
+from prompt_model import model
 
 app = Flask(__name__)
 
-# api_key = os.getenv("GUARDIAN_API_KEY")
-
-# @app.before_request
-# def setup_session():
-
-# @app.teardown_appcontext
-# def shutdown_session(exception=None):
 
 @app.route('/', methods=['GET'])
 def hello_world():
     return "<p>Hello from app!</p>"
 
+@app.route('/summarize_preferences', methods=['POST'])
+def summarize():
+    data = request.get_json()
+    chat_session = model.start_chat(history=[])
+    response = chat_session.send_message(data["raw_preferences"])
+
+    return jsonify({ "preferences": response }), 200
+
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8083)
+    app.run(host="0.0.0.0", port=8084)
