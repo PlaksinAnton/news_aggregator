@@ -3,3 +3,5 @@
 
 db/users_db/db_data/*
 !db/users_db/db_data/.gitkeep
+
+**/.env
