@@ -189,21 +189,21 @@ services:
 # DB
 #------------------------------------
 
-  # users_db:
-  #   image: mysql:8
-  #   container_name: users_db
+  users_db:
+    image: mysql:8
+    container_name: users_db
 
-  #   restart: always
-  #   environment:
-  #     MYSQL_ROOT_PASSWORD: root
-  #     # MYSQL_DATABASE: users_db
-  #   volumes:
-  #     - ./db/users_db/entrypoint-initdb.d:/docker-entrypoint-initdb.d
-  #     - ./db/users_db/db_data:/var/lib/mysql
-  #   ports:
-  #     - "3306:3306"
-  #   networks:
-  #     - network-dapr
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      # MYSQL_DATABASE: users_db
+    volumes:
+      - ./db/users_db/entrypoint-initdb.d:/docker-entrypoint-initdb.d
+      - ./db/users_db/db_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    networks:
+      - network-dapr
 
 networks:
   network-dapr:

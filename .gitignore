@@ -8,3 +8,31 @@ db/users_db/db_data/*
 
 **/token.json
 **/credentials.json
+
+# Ignore bundler config.
+/.bundle
+
+# Ignore all logfiles and tempfiles.
+/managers/user/log/*
+/managers/user/tmp/*
+!/managers/user/log/.keep
+!/managers/user/tmp/.keep
+
+# Ignore pidfiles, but keep the directory.
+/managers/user/tmp/pids/*
+!/managers/user/tmp/pids/
+!/managers/user/tmp/pids/.keep
+
+# Ignore uploaded files in development.
+/managers/user/storage/*
+!/managers/user/storage/.keep
+/managers/user/tmp/storage/*
+!/managers/user/tmp/storage/
+!/managers/user/tmp/storage/.keep
+
+# Ignore master key for decrypting credentials and more.
+/managers/user/config/master.key
+/managers/user/config/credentials.yml.enc
+
+# Ignore application configuration
+/managers/user/config/application.yml
