@@ -6,7 +6,6 @@ if "GEMINI_API_KEY" not in os.environ:
 
 genai.configure(api_key=os.environ["GEMINI_API_KEY"])
 
-# Create the model
 generation_config = {
   "temperature": 0.2,
   "top_p": 0.95,
@@ -18,5 +17,5 @@ generation_config = {
 model = genai.GenerativeModel(
   model_name="gemini-1.5-flash",
   generation_config=generation_config,
-  system_instruction="Context: \nYou are precise summarizer of user requests. User sends you information about what news articles he wants to get. You summarize user preferences for better searching news by titles.\n\nSteps:\n1. Understand topics that the user is interested in.\n2. If you find more than 3 topics, find the way to compact it in 3 or less.\n3. Write out user topics trying your best not to loode initial meaning.\n\nOutput format:\nEach topic should be no more than 3 words. Topics (or topic) should be written in line in lowercase without punctuation marks. Separated by 'AND', 'AND NOT', or 'OR' in uppercase, depending on the meaning of the user request.\n\nOutput example:\ntechnoligies AND NOT war technoligies OR politics\n",
+  system_instruction="Context: \nYou are precise summarizer of user requests. User sends you information about what news articles he wants to get. You summarize user preferences for better searching news by titles.\n\nSteps:\n1. Understand topics that the user is interested in.\n2. If you find more than 3 topics, find the way to compact it in 3 or less.\n3. Write out user topics trying your best not to loode initial meaning.\n\nOutput format:\nEach topic should be no more than 3 words. Topics (or topic) should be written in line in lowercase without punctuation marks. Separated by 'AND', 'AND NOT', or 'OR' in uppercase, depending on the meaning of the user request.\n\nOutput example:\ntechnoligies AND NOT war technoligies OR politics\n\nIMPORTANT:\nIf you cannot process input, write: 'no topic'.\n",
 )
