@@ -17,14 +17,15 @@ def send_message():
     app.logger.info('/send_message endpoint got called')
     
     message_data = request.get_json()
-    if message_data is None: 
-        return jsonify({'error': 'Invalid JSON'}), 400
+    if message_data is None:
+        app.logger.warning('endpoint got invalid request JSON')
+        return jsonify({'message': 'Invalid JSON'}), 400
 
     try:
         service = mailer.authenticate_gmail()
     except Exception as e:
         app.logger.error(f"{e}")
-        return jsonify({'message': 'Internal email api authentication error'}), 500
+        return jsonify({'error': 'Internal email api authentication error'}), 500
     else:
         app.logger.info('successfull gmail authentication')
 
@@ -34,19 +35,19 @@ def send_message():
     body = message_data.get("body")
 
     if body is None or subject is None or recipient is None:
-        return jsonify({'message': 'JSON does not contain all fields'}), 400
-
-    app.logger.info('json parsing is done')
+        app.logger.warning('some JSON fields are empty')
+        return jsonify({'message': 'JSON does not contain all necessary fields'}), 400
+    app.logger.info('JSON parsing is done')
 
     try:
         mailer.send_email(service,
                           sender,
-                          recipient, #'aplaksin2000@gmail.com', 
-                          subject, # 'API', 
-                          body) # test'
+                          recipient,
+                          subject, 
+                          body)
     except Exception as e:
         app.logger.error(f"{e}")
-        return jsonify({'message': 'Internal email api sending error'}), 500
+        return jsonify({'error': 'Internal email api sending error'}), 500
     else:
         app.logger.info('email is sent successfully')
 
