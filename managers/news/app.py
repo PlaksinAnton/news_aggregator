@@ -2,6 +2,7 @@ from flask import Flask, g, jsonify, request
 import os
 from connectors import connect_to_ai_summarizer, connect_to_news_collector, connect_to_message_handler
 from response_handlers import handle_response
+from datetime import datetime
 
 app = Flask(__name__)
 
@@ -42,9 +43,9 @@ def request_queue():
     subject = "Your personal news digest"
     email_body = ""
     for news in news_collector_response['lateat_news']:
-        title = f"<b><a href='{news['url']}'>{news['title']}</a></b>"
-        publication_date = news['publication_date']
-        email_body += f"{title}<br>{publication_date}<br><br>"
+        title = f"<a href='{news['url']}' style='font-weight:bold; text-decoration:none; color:blue;'>{news['title']}</a>"
+        publication_date = datetime.strptime(news['publication_date'], "%Y-%m-%dT%H:%M:%SZ").strftime("%Y-%m-%d %H:%M")
+        email_body += f"<p>{title}<br>{publication_date}</p>"
     
     message_handler_response = connect_to_message_handler(user_email, subject, email_body)
     result = handle_response(app.logger, message_handler_response, 'message handler')

@@ -6,6 +6,7 @@ from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
+from email.mime.multipart import MIMEMultipart
 
 SCOPES = ["https://www.googleapis.com/auth/gmail.send"]
 
@@ -27,30 +28,47 @@ def authenticate_gmail():
             token.write(creds.to_json())
     return build("gmail", "v1", credentials=creds)
 
-def create_message(sender, to, subject, body):
-    message = MIMEText(body)
+def create_message(sender, to, subject, html_body):
+    message = MIMEMultipart("alternative")
     message["to"] = to
     message["from"] = sender
     message["subject"] = subject
+    message.attach(MIMEText(html_body, "html"))
     raw = base64.urlsafe_b64encode(message.as_bytes()).decode()
     return {"raw": raw}
 
 def send_email(service, sender, to, subject, body):
     try:
-        message = create_message(sender, to, subject, body)
+        html_body = add_html_headers(body)
+        message = create_message(sender, to, subject, html_body)
         service.users().messages().send(userId="me", body=message).execute()
     except HttpError as error:
         print(f"An error occurred: {error}")
 
+def add_html_headers(body):
+    html_body = f"""
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Latest News</title>
+    </head>
+    <body>
+        {body}
+    </body>
+    </html>
+    """
+    return html_body
+    
 
 def main():
     try:
         service = authenticate_gmail()
         sender = "aplaksin691@gmail.com"
-        recipient = "mihsham1@gmail.com"
+        recipient = "aplaksin2000@gmail.com"
         subject = "Hello from Gmail API"
         body = "This is a test email sent using the Gmail API."
-        send_email(service, sender, recipient, subject, body)
+        send_email(service, sender, recipient, subject, html_body)
     except HttpError as error:
         print(f"An error occurred: {error}")
 
