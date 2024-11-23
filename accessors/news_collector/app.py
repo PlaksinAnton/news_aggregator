@@ -25,21 +25,25 @@ def get_news():
     request_data = request.get_json()
     request_body = request_data.get("body")
     if request_data is None or request_body is None:
-        return jsonify({'error': 'Invalid JSON'}), 400
+        app.logger.warning('endpoint got invalid request JSON')
+        return jsonify({'message': 'Invalid JSON'}), 400
 
     try:
         params = { 'q':request_body, 'lang':'en', 'page-size':INITIAL_NUMBER_OF_PUBLICATIONS, 'api-key':API_KEY }
         news_json = requests.get(url = SEARCH_URL, params = params)
     except Exception as e:
         app.logger.error(f"{e}")
-        return jsonify({'message': 'Internal news request error'}), 500
+        return jsonify({'error': 'Internal news request error'}), 500
     else:
         app.logger.info('successfull news request')
 
     news_data = news_json.json()
-    if news_data.get("response").get("total") is 0:
-        app.logger.warning('empty page is returned')
+    if news_data.get("response", {}).get("total") is 0:
+        app.logger.warning('empty news page is returned from the API')
         return jsonify({'empty_page': True, 'lateat_news': []}), 200
+    elif news_data.get("response", {}).get("total") is None:
+        app.logger.error('regular fields is missing in the news API response')
+        return jsonify({'error': 'Problems with news API'}), 500
     
     try:
         latest_news_data = sorted(
@@ -58,7 +62,7 @@ def get_news():
         ]
     except Exception as e:
         app.logger.error(f"{e}")
-        return jsonify({'message': 'Internal JSON parsing error'}), 500
+        return jsonify({'error': 'Internal JSON parsing error'}), 500
     else:
         app.logger.info('JSON parsed successfully')
     
