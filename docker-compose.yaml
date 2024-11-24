@@ -1,4 +1,23 @@
 services:
+  user_manager:
+    build: ./managers/user
+
+    image: user_manager_image
+    container_name: user_manager_container # Only for bash 
+
+    ports:
+      - "8081:8081"
+    environment:
+      - RAILS_ENV=production
+      - DATABASE_URL=mysql2://root:root@users_db:3306/users_db
+      - RAILS_MASTER_KEY=${RAILS_MASTER_KEY}
+      - PORT=8081
+    depends_on:
+      - users_db
+    networks:
+      - network-dapr
+
+
 #   news_manager:
 #     build: ./managers/news
 
