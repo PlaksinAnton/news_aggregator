@@ -1,0 +1,16 @@
+<p style="color: green"><%= notice %></p>
+
+<% content_for :title, "App users" %>
+
+<h1>App users</h1>
+
+<div id="app_users">
+  <% @app_users.each do |app_user| %>
+    <%= render app_user %>
+    <p>
+      <%= link_to "Show this app user", app_user %>
+    </p>
+  <% end %>
+</div>
+
+<%= link_to "New app user", new_app_user_path %>
