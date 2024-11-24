@@ -9,8 +9,9 @@ services:
       - "8081:8081"
     environment:
       - RAILS_ENV=production
-      - DATABASE_URL=mysql2://root:root@users_db:3306/users_db
+      # - DATABASE_URL=mysql2://root:root@users_db:3306/users_db
       - RAILS_MASTER_KEY=${RAILS_MASTER_KEY}
+      - DB_HOST=users_db
       - PORT=8081
     depends_on:
       - users_db
