@@ -1,0 +1,11 @@
+<p style="color: green"><%= notice %></p>
+
+<%= render @app_user %>
+
+<div>
+  <%= link_to "Edit this app user", edit_app_user_path(@app_user) %> |
+  <%= link_to "Back to app users", app_users_path %>
+
+  <%= button_to "Destroy this app user", @app_user, method: :delete %>
+  <%= button_to "Send news to user", news_request_path(@app_user), method: :post %>
+</div>

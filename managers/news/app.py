@@ -13,9 +13,9 @@ app.logger.setLevel(log_level)
 def hello_world():
     return "<p>Hello from app!</p>"
 
-@app.route('/request_queue', methods=['POST'])
+@app.route('/news_request_queue', methods=['POST'])
 def request_queue():
-    app.logger.info('/request_queue endpoint got called')
+    app.logger.info('/news_request_queue endpoint got called')
 
     user_data = request.get_json()
     raw_preferences = user_data.get("raw_preferences")
