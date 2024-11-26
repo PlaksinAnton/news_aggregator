@@ -3,7 +3,7 @@ services:
     build: ./managers/user
 
     image: user_manager_image
-    container_name: user_manager_container # Only for bash 
+    container_name: user_manager_container
 
     ports:
       - "8081:3000"
@@ -20,177 +20,198 @@ services:
       - network-dapr
 
 
-#   news_manager:
-#     build: ./managers/news
+  dapr_user_manager:
+    image: daprio/daprd:latest
+    container_name: dapr_user_manager_container
 
-#     image: news_manager_image
-#     container_name: news_manager_container # Only for bash
+    command: [
+      "./daprd",
+      "-app-port", "3000",
+      "-app-id", "user_manager", # Invoke name
+      "-app-protocol", "http",
+      "-dapr-http-port", "3500",
+      "-resources-path", "./components",
+      # "-config", "/components/config.yaml",
+      "-dapr-grpc-port", "50001"
+    ]
+    depends_on:
+      - user_manager
+    volumes:
+      - ./components:/components 
+    network_mode: "service:user_manager"
 
-#     ports:
-#       - "8082:8082"
-#     # logging:
-#     #   driver: "json-file" #
-#     #   options:
-#     #     max-size: "2m"
-#     #     max-file: "2"
-#     # depends_on:
-#     #   rabbitmq:
-#     #     condition: service_healthy
-#     networks:
-#       - network-dapr
+#------------------------------------
 
+  news_manager:
+    build: ./managers/news
 
-#   dapr_news_manager:
-#     image: daprio/daprd:latest
-#     container_name: dapr_news_manager_container
+    image: news_manager_image
+    container_name: news_manager_container # Only for bash
 
-#     command: [
-#       "./daprd",
-#       "-app-port", "8082",
-#       "-app-id", "news_manager", # Invoke name
-#       "-app-protocol", "http",
-#       "-dapr-http-port", "3500",
-#       "-resources-path", "./components",
-#       # "-config", "/components/config.yaml",
-#       "-dapr-grpc-port", "50001"
-#     ]
-#     depends_on:
-#       - news_manager
-#     volumes:
-#       - ./components:/components 
-#     network_mode: "service:news_manager"
+    ports:
+      - "8082:8082"
+    # logging:
+    #   driver: "json-file" #
+    #   options:
+    #     max-size: "2m"
+    #     max-file: "2"
+    # depends_on:
+    #   rabbitmq:
+    #     condition: service_healthy
+    networks:
+      - network-dapr
 
-# #------------------------------------
-# # Accessors
-# #------------------------------------
+  dapr_news_manager:
+    image: daprio/daprd:latest
+    container_name: dapr_news_manager_container
 
-#   ai_summarizer:
-#     build: ./accessors/ai_summarizer
+    command: [
+      "./daprd",
+      "-app-port", "8082",
+      "-app-id", "news_manager", # Invoke name
+      "-app-protocol", "http",
+      "-dapr-http-port", "3500",
+      "-resources-path", "./components",
+      # "-config", "/components/config.yaml",
+      "-dapr-grpc-port", "50001"
+    ]
+    depends_on:
+      - news_manager
+    volumes:
+      - ./components:/components 
+    network_mode: "service:news_manager"
 
-#     image: ai_summarizer_image
-#     container_name: ai_summarizer_container
+#------------------------------------
+# Accessors
+#------------------------------------
 
-#     environment:
-#       - GEMINI_API_KEY=${GEMINI_API_KEY}
-#     ports:
-#       - "8084:8084"
-#     logging:
-#       driver: "json-file"
-#       options:
-#         max-size: "2m"
-#         max-file: "2"
-#     # depends_on:
-#     #   rabbitmq:
-#     #     condition: service_healthy
-#     networks:
-#       - network-dapr
+  ai_summarizer:
+    build: ./accessors/ai_summarizer
 
+    image: ai_summarizer_image
+    container_name: ai_summarizer_container
 
-#   dapr_ai_summarizer:
-#     image: daprio/daprd:latest
-#     container_name: dapr_ai_summarizer_container
-
-#     command: [
-#       "./daprd",
-#       "-app-port", "8084",
-#       "-app-id", "ai_summarizer",
-#       "-app-protocol", "http",
-#       "-dapr-http-port", "3500",
-#       "-resources-path", "./components",
-#       # "-config", "/components/config.yaml",
-#       "-dapr-grpc-port", "50001"
-#     ]
-#     depends_on:
-#       - ai_summarizer
-#     volumes:
-#       - ./components:/components
-#     network_mode: "service:ai_summarizer"
-
-# #------------------------------------
-
-#   message_handler:
-#     build: ./accessors/message_handler
-
-#     image: message_handler_image
-#     container_name: message_handler_container
-
-#     ports:
-#       - "8085:8085"
-#     logging:
-#       driver: "json-file"
-#       options:
-#         max-size: "2m"
-#         max-file: "2"
-#     # depends_on:
-#     #   rabbitmq:
-#     #     condition: service_healthy
-#     networks:
-#       - network-dapr
+    environment:
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+    ports:
+      - "8084:8084"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "2m"
+        max-file: "2"
+    # depends_on:
+    #   rabbitmq:
+    #     condition: service_healthy
+    networks:
+      - network-dapr
 
 
-#   dapr_message_handler:
-#     image: daprio/daprd:latest
-#     container_name: dapr_message_handler_container
+  dapr_ai_summarizer:
+    image: daprio/daprd:latest
+    container_name: dapr_ai_summarizer_container
 
-#     command: [
-#       "./daprd",
-#       "-app-port", "8085",
-#       "-app-id", "message_handler",
-#       "-app-protocol", "http",
-#       "-dapr-http-port", "3500",
-#       "-resources-path", "./components",
-#       # "-config", "/components/config.yaml",
-#       "-dapr-grpc-port", "50001"
-#     ]
-#     depends_on:
-#       - message_handler
-#     volumes:
-#       - ./components:/components
-#     network_mode: "service:message_handler"
+    command: [
+      "./daprd",
+      "-app-port", "8084",
+      "-app-id", "ai_summarizer",
+      "-app-protocol", "http",
+      "-dapr-http-port", "3500",
+      "-resources-path", "./components",
+      # "-config", "/components/config.yaml",
+      "-dapr-grpc-port", "50001"
+    ]
+    depends_on:
+      - ai_summarizer
+    volumes:
+      - ./components:/components
+    network_mode: "service:ai_summarizer"
 
-# #------------------------------------
+#------------------------------------
 
-#   news_collector:
-#     build: ./accessors/news_collector
+  message_handler:
+    build: ./accessors/message_handler
 
-#     image: news_collector_image
-#     container_name: news_collector_container
+    image: message_handler_image
+    container_name: message_handler_container
 
-#     environment:
-#       - GUARDIAN_API_KEY=${GUARDIAN_API_KEY}
-#     ports:
-#       - "8083:8083"
-#     logging:
-#       driver: "json-file"
-#       options:
-#         max-size: "2m"
-#         max-file: "2"
-#     # depends_on:
-#     #   rabbitmq:
-#     #     condition: service_healthy
-#     networks:
-#       - network-dapr
+    ports:
+      - "8085:8085"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "2m"
+        max-file: "2"
+    # depends_on:
+    #   rabbitmq:
+    #     condition: service_healthy
+    networks:
+      - network-dapr
 
 
-#   dapr_news_collector:
-#     image: daprio/daprd:latest
-#     container_name: dapr_news_collector_container
+  dapr_message_handler:
+    image: daprio/daprd:latest
+    container_name: dapr_message_handler_container
 
-#     command: [
-#       "./daprd",
-#       "-app-port", "8083",
-#       "-app-id", "news_collector",
-#       "-app-protocol", "http",
-#       "-dapr-http-port", "3500",
-#       "-resources-path", "./components",
-#       # "-config", "/components/config.yaml",
-#       "-dapr-grpc-port", "50001"
-#     ]
-#     depends_on:
-#       - news_collector
-#     volumes:
-#       - ./components:/components
-#     network_mode: "service:news_collector"
+    command: [
+      "./daprd",
+      "-app-port", "8085",
+      "-app-id", "message_handler",
+      "-app-protocol", "http",
+      "-dapr-http-port", "3500",
+      "-resources-path", "./components",
+      # "-config", "/components/config.yaml",
+      "-dapr-grpc-port", "50001"
+    ]
+    depends_on:
+      - message_handler
+    volumes:
+      - ./components:/components
+    network_mode: "service:message_handler"
+
+#------------------------------------
+
+  news_collector:
+    build: ./accessors/news_collector
+
+    image: news_collector_image
+    container_name: news_collector_container
+
+    environment:
+      - GUARDIAN_API_KEY=${GUARDIAN_API_KEY}
+    ports:
+      - "8083:8083"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "2m"
+        max-file: "2"
+    # depends_on:
+    #   rabbitmq:
+    #     condition: service_healthy
+    networks:
+      - network-dapr
+
+
+  dapr_news_collector:
+    image: daprio/daprd:latest
+    container_name: dapr_news_collector_container
+
+    command: [
+      "./daprd",
+      "-app-port", "8083",
+      "-app-id", "news_collector",
+      "-app-protocol", "http",
+      "-dapr-http-port", "3500",
+      "-resources-path", "./components",
+      # "-config", "/components/config.yaml",
+      "-dapr-grpc-port", "50001"
+    ]
+    depends_on:
+      - news_collector
+    volumes:
+      - ./components:/components
+    network_mode: "service:news_collector"
 
 
   # users_db_accessor:
