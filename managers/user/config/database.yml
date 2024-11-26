@@ -14,7 +14,7 @@ default: &default
   encoding: utf8mb4
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   username: root
-  password: root
+  password: <%= ENV.fetch("MYSQL_ROOT_PASSWORD") { "root" } %>
   host: <%= ENV.fetch("DB_HOST") { "127.0.0.1" } %>
   port: <%= ENV.fetch("DB_PORT") { "3306" } %>
 
@@ -52,18 +52,18 @@ test:
 production:
   primary: &primary_production
     <<: *default
-    database: user_production
-    username: user
-    password: <%= ENV["USER_DATABASE_PASSWORD"] %>
-  cache:
-    <<: *primary_production
-    database: user_production_cache
-    migrations_paths: db/cache_migrate
-  queue:
-    <<: *primary_production
-    database: user_production_queue
-    migrations_paths: db/queue_migrate
-  cable:
-    <<: *primary_production
-    database: user_production_cable
-    migrations_paths: db/cable_migrate
+    database: users_db
+  #   username: root
+  #   password: <%= ENV["MYSQL_ROOT_PASSWORD"] %>
+  # cache:
+  #   <<: *primary_production
+  #   database: user_production_cache
+  #   migrations_paths: db/cache_migrate
+  # queue:
+  #   <<: *primary_production
+  #   database: user_production_queue
+  #   migrations_paths: db/queue_migrate
+  # cable:
+  #   <<: *primary_production
+  #   database: user_production_cable
+  #   migrations_paths: db/cable_migrate
