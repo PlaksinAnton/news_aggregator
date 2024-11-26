@@ -7,4 +7,5 @@
   <%= link_to "Back to app users", app_users_path %>
 
   <%= button_to "Destroy this app user", @app_user, method: :delete %>
+  <%= button_to "Send news to user", news_request_path(@app_user), method: :post %>
 </div>

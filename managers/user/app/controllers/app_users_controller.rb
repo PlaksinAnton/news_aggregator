@@ -57,6 +57,18 @@ class AppUsersController < ApplicationController
     end
   end
 
+  def news_request
+    app_user = AppUser.find(params[:id])
+    connection = Faraday.new(url: 'http://news_manager:8082')
+
+    response = connection.post do |request|
+      request.url '/v1.0/invoke/news_manager/method/request_queue'
+      request.headers['Content-Type'] = 'application/json'
+      request.body = { email: app_user.email, raw_preferences: app_user.preferences }.to_json
+    end
+    format.html { redirect_to @app_user, notice: "Message send. Status:#{response.status}" }
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_app_user
