@@ -60,12 +60,12 @@ class AppUsersController < ApplicationController
   def news_request
     app_user = AppUser.find(params[:id])
     # resp = nil
-    connection_to_news_manager = Faraday.new(url: 'http://news_manager:3500')
+    connection_to_news_manager = Faraday.new(url: 'http://localhost:3500')
 
     resp = connection_to_news_manager.post do |request|
-      request.url '/v1.0/invoke/news_manager/method/request_queue'
+      request.url '/v1.0/bindings/news_request_queue'
       request.headers['Content-Type'] = 'application/json'
-      request.body = { email: app_user.email, raw_preferences: app_user.preferences }.to_json
+      request.body = { data: { email: app_user.email, raw_preferences: app_user.preferences }, operation: "create" }.to_json
     end
 
     respond_to do |format|
