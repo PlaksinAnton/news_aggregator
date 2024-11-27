@@ -1,5 +1,7 @@
 class AppUsersController < ApplicationController
+  include ActionView::RecordIdentifier
   before_action :set_app_user, only: %i[ show edit update destroy ]
+  skip_before_action :verify_authenticity_token, only: [:news_queue_callback]
 
   # GET /app_users or /app_users.json
   def index
@@ -59,18 +61,31 @@ class AppUsersController < ApplicationController
 
   def news_request
     app_user = AppUser.find(params[:id])
-    # resp = nil
     connection_to_news_manager = Faraday.new(url: 'http://localhost:3500')
 
     resp = connection_to_news_manager.post do |request|
       request.url '/v1.0/bindings/news_request_queue'
       request.headers['Content-Type'] = 'application/json'
-      request.body = { data: { email: app_user.email, raw_preferences: app_user.preferences }, operation: "create" }.to_json
+      request.body = { data: { email: app_user.email, raw_preferences: app_user.preferences, user_id: app_user.id }, operation: "create" }.to_json
+    end
+
+    if resp&.status == 204
+      notice = 'Wait, sending the mail!'
+    else
+      notice = 'Something went wrong:( Please, try later'
     end
 
     respond_to do |format|
-      format.html { redirect_to app_user, notice: "Message send. Status:#{resp&.status || '???'}" }
+      format.html { redirect_to app_user, notice: notice }
     end
+  end
+
+  def news_queue_callback
+    body = JSON.parse(request.body.read)
+    @app_user = AppUser.find(body["user_id"])
+
+    broadcast_notice(body["message"])
+    head :ok
   end
 
   private
@@ -82,5 +97,14 @@ class AppUsersController < ApplicationController
     # Only allow a list of trusted parameters through.
     def app_user_params
       params.expect(app_user: [ :name, :email, :preferences ])
+    end
+
+    def broadcast_notice(message)
+      Turbo::StreamsChannel.broadcast_replace_to(
+        "app_users",
+        target: dom_id(@app_user, "notice"),
+        partial: "app_users/notice",
+        locals: { notice: message }
+      )
     end
 end

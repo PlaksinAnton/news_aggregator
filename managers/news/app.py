@@ -1,6 +1,6 @@
 from flask import Flask, g, jsonify, request
 import os
-from connectors import connect_to_ai_summarizer, connect_to_news_collector, connect_to_message_handler
+import connectors as dapr
 from response_handlers import handle_response
 from datetime import datetime
 
@@ -18,27 +18,31 @@ def request_queue():
     app.logger.info('/news_request_queue endpoint got called')
 
     user_data = request.get_json()
+    user_id = user_data.get("user_id")
     raw_preferences = user_data.get("raw_preferences")
     user_email = user_data.get("email")
     if raw_preferences is None or user_email is None:
         app.logger.warning('endpoint got invalid request JSON')
+        dapr.user_manager_callback('Please, enter your email and preferenses', user_id)
         return jsonify({'message': 'Invalid JSON'}), 400
     
-    ai_summarizer_response = connect_to_ai_summarizer(raw_preferences)
+    ai_summarizer_response = dapr.connect_to_ai_summarizer(raw_preferences)
     result = handle_response(app.logger, ai_summarizer_response, 'AI summarizer')
     if isinstance(result, tuple): return result # Check if it's an error response
     ai_summarizer_response = result
 
     if ai_summarizer_response['no_topic'] == True:
-        return jsonify({'error': "Preferenses not found, enter another"}), 422
+        dapr.user_manager_callback('Try enter another preferenses.', user_id)
+        return jsonify({'error': "Preferenses not found"}), 422
     
-    news_collector_response = connect_to_news_collector(ai_summarizer_response['preferences'])
+    news_collector_response = dapr.connect_to_news_collector(ai_summarizer_response['preferences'])
     result = handle_response(app.logger, news_collector_response, 'news collector')
     if isinstance(result, tuple): return result # Check if it's an error response
     news_collector_response = result
 
     if news_collector_response['empty_page'] == True:
-        return jsonify({'error': "No suitable news found"}), 422
+        dapr.user_manager_callback('Relevant news not found.', user_id)
+        return jsonify({'error': 'Relevant news not found'}), 422
      
     subject = "Your personal news digest"
     email_body = ""
@@ -47,10 +51,11 @@ def request_queue():
         publication_date = datetime.strptime(news['publication_date'], "%Y-%m-%dT%H:%M:%SZ").strftime("%Y-%m-%d %H:%M")
         email_body += f"<p>{title}<br>{publication_date}</p>"
     
-    message_handler_response = connect_to_message_handler(user_email, subject, email_body)
+    message_handler_response = dapr.connect_to_message_handler(user_email, subject, email_body)
     result = handle_response(app.logger, message_handler_response, 'message handler')
     if isinstance(result, tuple): return result # Check if it's an error response
 
+    dapr.user_manager_callback('Message sent! Check your Email.', user_id)
     return jsonify({'message': 'Email sent!'}), 200
 
 if __name__ == "__main__":
