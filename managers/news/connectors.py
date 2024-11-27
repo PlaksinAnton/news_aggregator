@@ -21,3 +21,10 @@ def connect_to_message_handler(recipient, subject, body):
     with DaprClient() as d:
         resp = d.invoke_method('message_handler', 'send_message', data=request_string, http_verb='post')
     return resp
+
+def user_manager_callback(message, user_id):
+    response_string = json.dumps({"message": message, "user_id": user_id})
+
+    with DaprClient() as d:
+        resp = d.invoke_method("user_manager", f"callback", data=response_string, http_verb='post')
+    return resp

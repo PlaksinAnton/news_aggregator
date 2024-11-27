@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
   resources :app_users
   post "/app_users/:id", to: "app_users#news_request", as: "news_request"
+  post "/callback", to: "app_users#news_queue_callback"
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
