@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  mount Rswag::Ui::Engine => '/api-docs'
+  mount Rswag::Api::Engine => '/api-docs'
   resources :app_users
   post "/app_users/:id", to: "app_users#news_request", as: "news_request"
   post "/callback", to: "app_users#news_queue_callback"
