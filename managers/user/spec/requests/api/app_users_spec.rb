@@ -84,7 +84,7 @@ RSpec.describe 'api/app_users', type: :request do
     end
   end
 
-  path '/app_users/{id}' do
+  path '/news_request/{user_id}' do
     post('Make news request to a queue for spesified user') do
       tags 'News logic'
       consumes 'application/x-www-form-urlencoded;charset=UTF-8'

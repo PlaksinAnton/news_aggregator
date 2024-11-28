@@ -112,6 +112,7 @@ paths:
               - authenticity_token
               - app_user
               - commit
+  "/news_request/{user_id}":
     post:
       summary: Make news request to a queue for spesified user
       tags:
