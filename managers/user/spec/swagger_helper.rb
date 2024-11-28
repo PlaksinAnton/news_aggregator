@@ -26,7 +26,6 @@ RSpec.configure do |config|
           AppUser: {
             type: 'object',
             properties: {
-              id: { type: :integer, example: 1 },
               name: { type: :string, example: 'Anton' },
               email: { type: :string, example: 'aplaksin2000@gmail.com' },
               preferences: { type: :string, example: 'I like reading news about eroupean politics and science' },

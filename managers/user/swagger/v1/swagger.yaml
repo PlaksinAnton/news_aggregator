@@ -8,9 +8,6 @@ components:
     AppUser:
       type: object
       properties:
-        id:
-          type: integer
-          example: 1
         name:
           type: string
           example: Anton
@@ -24,41 +21,142 @@ paths:
   "/app_users":
     get:
       summary: Retrieves a list of app users
+      tags:
+      - UI
       responses:
         '200':
-          description: Current app users
+          description: Depicts current app users
     post:
       summary: Creates a new app user
+      tags:
+      - UI
       parameters: []
       responses:
-        '201':
-          description: App user created
+        '302':
+          description: Redirects to the User view
       requestBody:
         content:
           application/x-www-form-urlencoded;charset=UTF-8:
             schema:
-              type: string
-        required: true
-        description: CSRF token
+              type: object
+              properties:
+                authenticity_token:
+                  type: string
+                  description: CSRF token
+                  example: RbvulqBFVlGQfZzTTxVDD07J6laRVQVdsWMnlZNEC6rUXjg5yiaSn9KhE4zYTnWeHHfddeFpNk0-hGrC4VltIQ
+                app_user:
+                  "$ref": "#/components/schemas/AppUser"
+                commit:
+                  type: string
+                  description: Submit button value
+                  example: Create App user
+              required:
+              - authenticity_token
+              - app_user
+              - commit
   "/app_users/{id}":
     get:
       summary: Retrieves a specific app user
+      tags:
+      - UI
       responses:
         '200':
-          description: App user found
-        '404':
-          description: App user not found
+          description: Depicts specidied app user
     put:
       summary: Updates a specific app user
+      tags:
+      - UI
+      parameters: []
       responses:
-        '200':
+        '302':
           description: App user updated
+      requestBody:
+        content:
+          application/x-www-form-urlencoded;charset=UTF-8:
+            schema:
+              type: object
+              properties:
+                authenticity_token:
+                  type: string
+                  description: CSRF token
+                  example: RbvulqBFVlGQfZzTTxVDD07J6laRVQVdsWMnlZNEC6rUXjg5yiaSn9KhE4zYTnWeHHfddeFpNk0-hGrC4VltIQ
+                app_user:
+                  "$ref": "#/components/schemas/AppUser"
+                commit:
+                  type: string
+                  description: Submit button value
+                  example: Create App user
+              required:
+              - authenticity_token
+              - app_user
+              - commit
     delete:
       summary: Deletes a specific app user
+      tags:
+      - UI
+      parameters: []
       responses:
-        '204':
+        '303':
           description: App user deleted
-        '404':
-          description: App user not found
+      requestBody:
+        content:
+          application/x-www-form-urlencoded;charset=UTF-8:
+            schema:
+              type: object
+              properties:
+                authenticity_token:
+                  type: string
+                  description: CSRF token
+                  example: RbvulqBFVlGQfZzTTxVDD07J6laRVQVdsWMnlZNEC6rUXjg5yiaSn9KhE4zYTnWeHHfddeFpNk0-hGrC4VltIQ
+              required:
+              - authenticity_token
+              - app_user
+              - commit
+    post:
+      summary: Make news request to a queue for spesified user
+      tags:
+      - News logic
+      parameters: []
+      responses:
+        '303':
+          description: Redirects to user view
+      requestBody:
+        content:
+          application/x-www-form-urlencoded;charset=UTF-8:
+            schema:
+              type: object
+              properties:
+                authenticity_token:
+                  type: string
+                  description: CSRF token
+                  example: RbvulqBFVlGQfZzTTxVDD07J6laRVQVdsWMnlZNEC6rUXjg5yiaSn9KhE4zYTnWeHHfddeFpNk0-hGrC4VltIQ
+              required:
+              - authenticity_token
+              - app_user
+              - commit
+  "/callback":
+    post:
+      summary: Callback for getting realtime updates about news request status
+      tags:
+      - News logic
+      parameters: []
+      responses:
+        '200':
+          description: User view updated
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                app_user:
+                  type: object
+                  properties:
+                    use_id:
+                      type: integer
+                      example: '1'
+                    message:
+                      type: string
+                      example: Message sent! Check your Email.
 servers:
 - url: http://127.0.0.1:8081
