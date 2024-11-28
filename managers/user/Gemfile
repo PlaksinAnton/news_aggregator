@@ -49,6 +49,12 @@ group :development, :test do
 
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
   gem "rubocop-rails-omakase", require: false
+
+  # Rails doc
+  gem "rspec-rails"
+
+  # Open API
+  gem "rswag-specs"
 end
 
 group :development do
@@ -56,4 +62,9 @@ group :development do
   gem "web-console"
 end
 
+# http requests
 gem 'faraday', '~> 2.7', '>= 2.7.11'
+
+# Open API
+gem "rswag-api"
+gem "rswag-ui"
