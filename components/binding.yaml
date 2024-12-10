@@ -1,7 +1,7 @@
 apiVersion: dapr.io/v1alpha1
 kind: Component
 metadata:
-  name: news_request_queue  # This name is referenced in your application code
+  name: news_request_queue  # This name is referenced in application code
   namespace: default
 spec:
   type: bindings.rabbitmq
@@ -13,7 +13,5 @@ spec:
     value: "news_request_queue"
   - name: durable
     value: "false"
-  - name: autoAck
-    value: "true"  
-  - name: deleteWhenUnused
-    value: "true"
+  # - name: autoAck
+  #   value: "true"

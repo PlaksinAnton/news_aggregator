@@ -30,8 +30,9 @@ def request_queue():
     result = handle_response(app.logger, ai_summarizer_response, 'AI summarizer')
     if isinstance(result, tuple): return result # Check if it's an error response
     ai_summarizer_response = result
-
+ 
     if ai_summarizer_response['no_topic'] == True:
+        app.logger.warning(f"Ai couldn't get the topic right:{ai_summarizer_response['preferences']}")
         dapr.user_manager_callback('Try enter another preferenses.', user_id)
         return jsonify({'error': "Preferenses not found"}), 422
     
@@ -41,6 +42,7 @@ def request_queue():
     news_collector_response = result
 
     if news_collector_response['empty_page'] == True:
+        app.logger.warning(f"No relevant news by this theme: {ai_summarizer_response['preferences']}")
         dapr.user_manager_callback('Relevant news not found.', user_id)
         return jsonify({'error': 'Relevant news not found'}), 422
      
@@ -51,6 +53,7 @@ def request_queue():
         publication_date = datetime.strptime(news['publication_date'], "%Y-%m-%dT%H:%M:%SZ").strftime("%Y-%m-%d %H:%M")
         email_body += f"<p>{title}<br>{publication_date}</p>"
     
+    # app.logger.warning(f"Ai couldn't get the topic right:{ai_summarizer_response['preferences']}")
     message_handler_response = dapr.connect_to_message_handler(user_email, subject, email_body)
     result = handle_response(app.logger, message_handler_response, 'message handler')
     if isinstance(result, tuple): return result # Check if it's an error response
