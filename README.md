@@ -28,6 +28,23 @@ Currently, the project has completed the active development stage, the core func
 ### Microservice arcitecture
 ![screenshot goes here](/docs/project_arcitecture.png)
 
+####User manager    
+This is a Ruby on Rails app that serves as a UI for the client, providing basic CRUD operations. Additionally, the app is connected to a database to support all provided operations.    
+The final function of the User Manager is to send a request for news with all necessary information.    
+
+####News manager    
+This is a Flask app manager that orchestrates data flow between various accessors. Its main purpose is to call each service, gather data, and send news to the client.    
+
+####AI summarizer accessor    
+Flask app that connects to Gemini to summup the user preferenses for the news collector.    
+
+####News collector accessor    
+Flask app that connects to The guardian API and collects relevant news.    
+
+####Message handler accessor    
+Flask app that sends email by adress via Google API.
+
+
 ## Run the application
 1. Clone the repository  
 ```sh
