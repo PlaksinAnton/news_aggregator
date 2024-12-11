@@ -14,6 +14,9 @@ def authenticate_gmail():
     creds = None
     if os.path.exists("token.json"):
         creds = Credentials.from_authorized_user_file("token.json", SCOPES)
+        print(creds)
+        print('---------------------------------------------')
+        print(creds.valid)
     # If no valid credentials, initiate the OAuth flow
     if not creds or not creds.valid:
         if creds and creds.expired and creds.refresh_token:
@@ -68,7 +71,7 @@ def main():
         recipient = "aplaksin2000@gmail.com"
         subject = "Hello from Gmail API"
         body = "This is a test email sent using the Gmail API."
-        send_email(service, sender, recipient, subject, html_body)
+        send_email(service, sender, recipient, subject, body)
     except HttpError as error:
         print(f"An error occurred: {error}")
 
