@@ -32,13 +32,7 @@ Currently, the project has completed the active development stage, the core func
 1. Clone the repository  
 ```sh
 git clone https://github.com/PlaksinAnton/news_aggregator.git
-```      
-
-2. Before running the application it is important to get all secret keys for APIs configured.    
-- Create .env file in project root directory:
-```sh
-nano .env
-```      
+```      Add an ID to requests to distinguish callback messages
 - You will be filling it with next variables:
 ```
 GUARDIAN_API_KEY=
@@ -61,6 +55,8 @@ docker compose up -d --build
 ```    
 
 ## Things for future development
+
+- Fix dapr retry policy.    
 
 - Add an ID to requests to distinguish callback messages.    
 

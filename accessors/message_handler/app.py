@@ -24,7 +24,7 @@ def send_message():
     try:
         service = mailer.authenticate_gmail()
     except Exception as e:
-        app.logger.error(f"{e}")
+        app.logger.error(f"while authentication: {e}")
         return jsonify({'error': 'Internal email api authentication error'}), 500
     else:
         app.logger.info('successfull gmail authentication')
@@ -46,7 +46,7 @@ def send_message():
                           subject, 
                           body)
     except Exception as e:
-        app.logger.error(f"{e}")
+        app.logger.error(f"while sending email: {e}")
         return jsonify({'error': 'Internal email api sending error'}), 500
     else:
         app.logger.info('email is sent successfully')

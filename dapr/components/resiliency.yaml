@@ -16,5 +16,17 @@ spec:
         maxRetries: 3
   targets:
     components:
-      - name: news_request_queue
+      news_request_queue:
         retries: no-retry
+      news_collector:
+        retries: no-retry
+      message_handler:
+        retries: no-retry
+      ai_summarizer:
+        retries: no-retry
+      news_manager:
+        retries: no-retry
+      user_manager:
+        retries: no-retry
+
+

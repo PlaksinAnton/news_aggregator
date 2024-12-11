@@ -24,7 +24,7 @@ def request_queue():
     if raw_preferences is None or user_email is None:
         app.logger.warning('endpoint got invalid request JSON')
         dapr.user_manager_callback('Please, enter your email and preferenses', user_id)
-        return jsonify({'message': 'Invalid JSON'}), 400
+        return jsonify({'message': 'Invalid JSON'}), 200 #400
     
     ai_summarizer_response = dapr.connect_to_ai_summarizer(raw_preferences)
     result = handle_response(app.logger, ai_summarizer_response, 'AI summarizer')
@@ -34,7 +34,7 @@ def request_queue():
     if ai_summarizer_response['no_topic'] == True:
         app.logger.warning(f"Ai couldn't get the topic right:{ai_summarizer_response['preferences']}")
         dapr.user_manager_callback('Try enter another preferenses.', user_id)
-        return jsonify({'error': "Preferenses not found"}), 422
+        return jsonify({'error': "Preferenses not found"}), 200 #422
     
     news_collector_response = dapr.connect_to_news_collector(ai_summarizer_response['preferences'])
     result = handle_response(app.logger, news_collector_response, 'news collector')
@@ -44,7 +44,7 @@ def request_queue():
     if news_collector_response['empty_page'] == True:
         app.logger.warning(f"No relevant news by this theme: {ai_summarizer_response['preferences']}")
         dapr.user_manager_callback('Relevant news not found.', user_id)
-        return jsonify({'error': 'Relevant news not found'}), 422
+        return jsonify({'error': 'Relevant news not found'}), 200 #422
      
     subject = "Your personal news digest"
     email_body = ""

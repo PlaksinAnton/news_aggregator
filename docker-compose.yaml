@@ -35,14 +35,14 @@ services:
       "-app-id", "user_manager", # Invoke name
       "-app-protocol", "http",
       "-dapr-http-port", "3500",
-      "-resources-path", "./components",
-      "-config", "/components/config.yaml",
+      "-resources-path", "./dapr/components",
+      "-config", "./dapr/config.yaml",
       "-dapr-grpc-port", "50001"
     ]
     depends_on:
       - user_manager
     volumes:
-      - ./components:/components 
+      - ./dapr/:/dapr
     network_mode: "service:user_manager"
 
 #------------------------------------
@@ -66,6 +66,7 @@ services:
     networks:
       - network-dapr
 
+
   dapr_news_manager:
     image: daprio/daprd:latest
     container_name: dapr_news_manager_container
@@ -76,14 +77,14 @@ services:
       "-app-id", "news_manager", # Invoke name
       "-app-protocol", "http",
       "-dapr-http-port", "3500",
-      "-resources-path", "./components",
-      "-config", "/components/config.yaml",
+      "-resources-path", "./dapr/components",
+      "-config", "./dapr/config.yaml",
       "-dapr-grpc-port", "50001"
     ]
     depends_on:
       - news_manager
     volumes:
-      - ./components:/components 
+      - ./dapr/:/dapr
     network_mode: "service:news_manager"
 
 #------------------------------------
@@ -122,14 +123,14 @@ services:
       "-app-id", "ai_summarizer",
       "-app-protocol", "http",
       "-dapr-http-port", "3500",
-      "-resources-path", "./components",
-      "-config", "/components/config.yaml",
+      "-resources-path", "./dapr/components",
+      "-config", "./dapr/config.yaml",
       "-dapr-grpc-port", "50001"
     ]
     depends_on:
       - ai_summarizer
     volumes:
-      - ./components:/components
+      - ./dapr/:/dapr
     network_mode: "service:ai_summarizer"
 
 #------------------------------------
@@ -164,14 +165,14 @@ services:
       "-app-id", "message_handler",
       "-app-protocol", "http",
       "-dapr-http-port", "3500",
-      "-resources-path", "./components",
-      "-config", "/components/config.yaml",
+      "-resources-path", "./dapr/components",
+      "-config", "./dapr/config.yaml",
       "-dapr-grpc-port", "50001"
     ]
     depends_on:
       - message_handler
     volumes:
-      - ./components:/components
+      - ./dapr/:/dapr
     network_mode: "service:message_handler"
 
 #------------------------------------
@@ -208,14 +209,14 @@ services:
       "-app-id", "news_collector",
       "-app-protocol", "http",
       "-dapr-http-port", "3500",
-      "-resources-path", "./components",
-      "-config", "/components/config.yaml",
+      "-resources-path", "./dapr/components",
+      "-config", "./dapr/config.yaml",
       "-dapr-grpc-port", "50001"
     ]
     depends_on:
       - news_collector
     volumes:
-      - ./components:/components
+      - ./dapr/:/dapr
     network_mode: "service:news_collector"
 
 

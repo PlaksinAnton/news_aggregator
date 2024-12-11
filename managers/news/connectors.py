@@ -26,5 +26,5 @@ def user_manager_callback(message, user_id):
     response_string = json.dumps({"message": message, "user_id": user_id})
 
     with DaprClient() as d:
-        resp = d.invoke_method("user_manager", f"callback", data=response_string, http_verb='post')
+        resp = d.invoke_method("user_manager", "callback", data=response_string, http_verb='post')
     return resp
