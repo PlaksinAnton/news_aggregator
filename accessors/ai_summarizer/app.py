@@ -39,12 +39,14 @@ def summarize():
         .get("text")
         .strip()
     )
+    
     if preferences == 'no topic':
         return jsonify({'no_topic': True, 'preferences': preferences}), 200
     elif preferences is None:
+        app.logger.warning(f"unsuccessful parsing of answer from ai: {ai_response_dict}")
         return jsonify({'error': 'Unsuccessful JSON parsing'}), 500
     
-    app.logger.info('answer from AI is parsed')
+    app.logger.info(f"answer from AI is parsed: {preferences}")
     return jsonify({'no_topic': False, 'preferences': preferences}), 200
 
 if __name__ == "__main__":

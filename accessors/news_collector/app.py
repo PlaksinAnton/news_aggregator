@@ -38,7 +38,7 @@ def get_news():
         app.logger.info('successfull news request')
 
     news_data = news_json.json()
-    if news_data.get("response", {}).get("total") is 0:
+    if news_data.get("response", {}).get("total") == 0:
         app.logger.warning('empty news page is returned from the API')
         return jsonify({'empty_page': True, 'lateat_news': []}), 200
     elif news_data.get("response", {}).get("total") is None:

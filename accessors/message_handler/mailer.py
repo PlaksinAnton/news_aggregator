@@ -68,7 +68,7 @@ def main():
         recipient = "aplaksin2000@gmail.com"
         subject = "Hello from Gmail API"
         body = "This is a test email sent using the Gmail API."
-        send_email(service, sender, recipient, subject, html_body)
+        send_email(service, sender, recipient, subject, body)
     except HttpError as error:
         print(f"An error occurred: {error}")
 

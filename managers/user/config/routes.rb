@@ -3,7 +3,7 @@ Rails.application.routes.draw do
   mount Rswag::Api::Engine => '/api-docs'
   resources :app_users
   post "/news_request/:id", to: "app_users#news_request", as: "news_request"
-  post "/callback", to: "app_users#news_queue_callback"
+  post "/callback", to: "app_users#news_queue_callback", as: "callback"
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
