@@ -53,6 +53,8 @@ services:
     image: news_manager_image
     container_name: news_manager_container # Only for bash
 
+    environment:
+      - FLASK_ENV=production
     ports:
       - "8082:8082"
     logging:
@@ -99,6 +101,7 @@ services:
 
     environment:
       - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - FLASK_ENV=production
     ports:
       - "8084:8084"
     logging:
@@ -141,6 +144,8 @@ services:
     image: message_handler_image
     container_name: message_handler_container
 
+    environment:
+      - FLASK_ENV=production
     ports:
       - "8085:8085"
     logging:
@@ -185,6 +190,7 @@ services:
 
     environment:
       - GUARDIAN_API_KEY=${GUARDIAN_API_KEY}
+      - FLASK_ENV=production
     ports:
       - "8083:8083"
     logging:
