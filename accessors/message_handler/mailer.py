@@ -14,9 +14,6 @@ def authenticate_gmail():
     creds = None
     if os.path.exists("token.json"):
         creds = Credentials.from_authorized_user_file("token.json", SCOPES)
-        print(creds)
-        print('---------------------------------------------')
-        print(creds.valid)
     # If no valid credentials, initiate the OAuth flow
     if not creds or not creds.valid:
         if creds and creds.expired and creds.refresh_token:
